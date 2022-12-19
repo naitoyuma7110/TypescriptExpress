@@ -2,7 +2,7 @@ import mysql from "mysql2/promise";
 import { GameRecord } from "./gameRecord";
 // recordとdatabase間のデータのやり取り(sql)
 
-export class Gamegateway {
+export class GameGateway {
 	// 最新のgameを取得する
 	async findLatest(conn: mysql.Connection): Promise<GameRecord | undefined> {
 		const gameSelectResult = await conn.execute<mysql.RowDataPacket[]>(

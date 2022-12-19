@@ -5,13 +5,11 @@ export class SquareGateway {
 		conn: mysql.Connection,
 		turnId: number
 		// SquareRecord型の配列が返される事に注意
-	): Promise<SquareRecord[] | undefined> {
+	): Promise<SquareRecord[]> {
 		const squaresSelectResult = await conn.execute<mysql.RowDataPacket[]>(
 			"select id, turn_id, x, y, disc from squares where turn_id = ?",
 			[turnId]
 		);
-
-		if (!squaresSelectResult) undefined;
 
 		// 配列[0]内に64のマス目データを持つ：[id, turn_id, x, y, disc]×64
 		const records = squaresSelectResult[0];

@@ -1,4 +1,4 @@
-import { TurnService } from "./../application/turnService";
+import { TurnService } from "./../application/service/turnService";
 import express from "express";
 
 export const turnRouter = express.Router();
@@ -20,10 +20,8 @@ turnRouter.get(
 	async (req, res: express.Response<TurnGetResponseBody>) => {
 		const turnCount = parseInt(req.params.turnCount);
 
-		// FindLatestGameTurnByCTurnCountOutput型
 		const output = await turnService.findLatestGameTurnCount(turnCount);
 
-		// FindLatestGameTurnByCTurnCountOutputからTurnGetResponseBody型へ変換
 		const responseBody = {
 			turnCount: output.turnCount,
 			board: output.bord,
@@ -46,7 +44,7 @@ interface TurnPostRequestBody {
 
 turnRouter.post(
 	"/api/games/latest/turns",
-	// requestの型指定、
+	// requestの型指定、{}はexpressの仕様
 	async (req: express.Request<{}, {}, TurnPostRequestBody>, res) => {
 		const turnCount = req.body.turnCount;
 		const disc = req.body.move.disc;

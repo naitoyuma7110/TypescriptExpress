@@ -1,4 +1,4 @@
-import { GameService } from "./../application/gameService";
+import { GameService } from "./../application/service/gameService";
 import express from "express";
 
 export const gameRouter = express.Router();
