@@ -1,5 +1,7 @@
+import { Point } from "./../domain/model/turn/point";
 import { TurnService } from "./../application/service/turnService";
 import express from "express";
+import { toDisc } from "../domain/model/turn/disc";
 
 export const turnRouter = express.Router();
 
@@ -42,16 +44,19 @@ interface TurnPostRequestBody {
 	};
 }
 
+// フロントからのreq-paramのバリデーションは各modelに実装
 turnRouter.post(
 	"/api/games/latest/turns",
 	// requestの型指定、{}はexpressの仕様
 	async (req: express.Request<{}, {}, TurnPostRequestBody>, res) => {
 		const turnCount = req.body.turnCount;
-		const disc = req.body.move.disc;
-		const x = req.body.move.x;
-		const y = req.body.move.y;
 
-		await turnService.registerTurn(turnCount, disc, x, y);
+		// DiscモデルのtoDiscメソッドでバリデーションエラーを投げる
+		const disc = toDisc(req.body.move.disc);
+		// Pointモデルのconstructorでバリデーションエラーを投げる
+		const point = new Point(req.body.move.x, req.body.move.y);
+
+		await turnService.registerTurn(turnCount, disc, point);
 
 		res.status(201).end();
 	}

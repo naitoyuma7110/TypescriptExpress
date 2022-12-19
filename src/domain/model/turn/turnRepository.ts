@@ -1,9 +1,9 @@
 import { DomainError } from "./../../error/domainError";
-import { Board } from "../../board";
-import { Move } from "../../move";
+import { Board } from "./board";
+import { Move } from "./move";
 import { Turn } from "./turn";
-import { toDisc } from "../../disc";
-import { Point } from "../../point";
+import { toDisc } from "./disc";
+import { Point } from "./point";
 import { MoveGateway } from "../../../infrastructure/moveGateway";
 import { SquareGateway } from "../../../infrastructure/squareGateway";
 import { TurnGateway } from "../../../infrastructure/turnGateway";
@@ -48,10 +48,15 @@ export class TurnRepository {
 			);
 		}
 
+		// 互いの石が置けない＝勝敗が付いた場合、turnテーブルのnext_discにはnullを入れる
+		// insert結果としてturnRecord.nextDiscもnullが入るためここで整合させる
+		const nextDisc =
+			turnRecord.nextDisc === null ? undefined : toDisc(turnRecord.nextDisc);
+
 		return new Turn(
 			gameId,
 			turnCount,
-			toDisc(turnRecord.nextDisc),
+			nextDisc,
 			move,
 			new Board(board),
 			turnRecord.endAt

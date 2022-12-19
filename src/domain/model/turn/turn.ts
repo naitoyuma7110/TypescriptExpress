@@ -1,15 +1,16 @@
+import { WinnerDisc } from "./../gameResult/winnerDisc";
 import { DomainError } from "./../../error/domainError";
-import { Point } from "../../point";
-import { Board } from "../../board";
-import { Move } from "../../move";
-import { Disc } from "../../disc";
-import { initialBoard } from "../../board";
+import { Point } from "./point";
+import { Board } from "./board";
+import { Move } from "./move";
+import { Disc } from "./disc";
+import { initialBoard } from "./board";
 
 export class Turn {
 	constructor(
 		private _gameId: number,
 		private _turnCount: number,
-		private _nextDisc: Disc,
+		private _nextDisc: Disc | undefined,
 		private _move: Move | undefined,
 		private _board: Board,
 		private _endAt: Date
@@ -28,9 +29,8 @@ export class Turn {
 
 		const nextBoard = this._board.place(move);
 
-		// 次の石が置けない場合はスキップ
-
-		const nextDisc = disc === Disc.Dark ? Disc.Light : Disc.Dark;
+		// 次の石が置けない場合はスキップして次の石は同じ色
+		const nextDisc = this.decideNextDisc(nextBoard, disc);
 
 		return new Turn(
 			this._gameId,
@@ -41,6 +41,45 @@ export class Turn {
 			new Date()
 		);
 	}
+
+	// publicメソッドからTurnモデルにアクセス
+	gameEnded(): boolean {
+		return this._nextDisc === undefined;
+	}
+
+	WinnerDisc(): WinnerDisc {
+		const darkCount = this._board.count(Disc.Dark);
+		const lightCount = this._board.count(Disc.Light);
+
+		if (darkCount === lightCount) {
+			return WinnerDisc.Draw;
+		} else if (darkCount > lightCount) {
+			return WinnerDisc.Dark;
+		} else {
+			return WinnerDisc.Light;
+		}
+	}
+
+	private decideNextDisc(board: Board, previousDisc: Disc): Disc | undefined {
+		// boardから次に白または黒が打てるか判定
+		const existDarkValidMove = board.existValidMove(Disc.Dark);
+		const existLightValidMove = board.existValidMove(Disc.Light);
+
+		if (existDarkValidMove && existLightValidMove) {
+			// 両方置ける場合
+			return previousDisc === Disc.Dark ? Disc.Light : Disc.Dark;
+		} else if (!existDarkValidMove && !existLightValidMove) {
+			// 両方置けない場合
+			return undefined;
+		} else if (existDarkValidMove) {
+			// 片方(黒)しか置けない場合
+			return Disc.Dark;
+		} else {
+			// 片方(白)しか置けない場合
+			return Disc.Light;
+		}
+	}
+
 	get gameId() {
 		return this._gameId;
 	}

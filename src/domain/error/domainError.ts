@@ -3,11 +3,14 @@ type DomainErrorType =
 	| "FlipPointsIsEmpty"
 	| "SelectedDiscIsNotNextDisc"
 	| "SpecifiedTurnNotFound"
-	| "FlipPointIsEmpty";
+	| "FlipPointIsEmpty"
+	| "InvalidPoint"
+	| "InvalidDiscValue"
+	| "InvalidWinnerDiscValue";
 
 export class DomainError extends Error {
 	constructor(private _type: DomainErrorType, message: string) {
-		// 親クラスのconstractorにmessageを渡す
+		// 親Errorクラスのconstractorにmessageを渡す
 		super(message);
 	}
 

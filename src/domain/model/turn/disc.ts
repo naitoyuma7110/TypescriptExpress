@@ -1,3 +1,4 @@
+import { DomainError } from "./../../error/domainError";
 export const Disc = {
 	Empty: 0,
 	Dark: 1,
@@ -9,7 +10,10 @@ export const Disc = {
 // type Disc = 0 | 1 | 2
 export type Disc = typeof Disc[keyof typeof Disc];
 
-export function toDisc(value: number) {
+export function toDisc(value: any) {
+	if (!Object.values(Disc).includes(value)) {
+		throw new DomainError("InvalidDiscValue", "InvalidDiscValue");
+	}
 	return value as Disc;
 }
 

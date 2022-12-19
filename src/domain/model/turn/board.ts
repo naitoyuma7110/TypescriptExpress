@@ -1,4 +1,4 @@
-import { DomainError } from "./error/domainError";
+import { DomainError } from "../../error/domainError";
 import { Point } from "./point";
 import { Move } from "./move";
 import { Disc, isOppositeDisc } from "./disc";
@@ -107,6 +107,38 @@ export class Board {
 		walled.push(topAndBottomWall);
 
 		return walled;
+	}
+
+	existValidMove(disc: Disc) {
+		for (let y = 0; y < this._discs.length; y++) {
+			const line: Disc[] = this._discs[y];
+			for (let x = 0; x < line.length; x++) {
+				const discOnBoard = line[x];
+
+				if (discOnBoard !== Disc.Empty) {
+					// 次のxのforループへ
+					continue;
+				}
+
+				// 走査中の座標のPointモデルと、石の色からMoveモデルを作成
+				const move = new Move(disc, new Point(x, y));
+				// moveによってひっくり返せる石があるか？なければ置けない
+				const flipPoints = this.listFlipPoints(move);
+
+				if (flipPoints.length !== 0) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	count(disc: Disc): number {
+		return this._discs
+			.map((line: Disc[]) => {
+				return line.filter((discOnBoard: Disc) => discOnBoard === disc).length;
+			})
+			.reduce((v1, v2) => v1 + v2, 0);
 	}
 
 	get discs() {
