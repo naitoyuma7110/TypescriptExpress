@@ -1,16 +1,15 @@
-import { GameResultRepository } from "./../../domain/model/gameResult/gameResultRepository";
-import { WinnerDisc } from "./../../domain/model/gameResult/winnerDisc";
+import { GameResultMySQLRepository } from "./../../infrastructure/repository/gameResult/gameResultMySQLRepository";
+import { GameMySQLRepository } from "./../../infrastructure/repository/game/gameMySQLRepository";
+import { TurnMySQLRepository } from "./../../infrastructure/repository/turn/turnMySQLRepository";
 import { Disc } from "./../../domain/model/turn/disc";
 import { ApplicationError } from "./../applicationError";
-import { GameRepository } from "../../domain/model/game/gameRepository";
-import { TurnRepository } from "../../domain/model/turn/turnRepository";
 import { connectMySQL } from "../../infrastructure/connection";
 import { Point } from "../../domain/model/turn/point";
 import { GameResult } from "../../domain/model/gameResult/gameResult";
 
-const turnRepository = new TurnRepository();
-const gameRepository = new GameRepository();
-const gameResultRepository = new GameResultRepository();
+const turnRepository = new TurnMySQLRepository();
+const gameRepository = new GameMySQLRepository();
+const gameResultRepository = new GameResultMySQLRepository();
 // 返り値クラスでリターン内容を明示する
 class FindLatestGameTurnByTurnCountOutput {
 	constructor(
@@ -41,10 +40,7 @@ export class TurnService {
 		try {
 			const game = await gameRepository.findLatest(conn);
 			if (!game) {
-				throw new ApplicationError(
-					"LatestGameNotFound",
-					"Latest game not found"
-				);
+				throw new ApplicationError("LatestGameNotFound", "Latest game not found");
 			}
 
 			if (!game.id) {
@@ -79,10 +75,7 @@ export class TurnService {
 			await conn.beginTransaction();
 			const game = await gameRepository.findLatest(conn);
 			if (!game) {
-				throw new ApplicationError(
-					"LatestGameNotFound",
-					"Latest game not found"
-				);
+				throw new ApplicationError("LatestGameNotFound", "Latest game not found");
 			}
 
 			if (!game.id) {
