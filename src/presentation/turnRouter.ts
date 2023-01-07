@@ -1,11 +1,26 @@
+import { FindLatestGameTurnCountUseCase } from "./../application/useCase/findLatestGameTurnCountUseCase";
+import { RegisterTurnUseCase } from "./../application/useCase/registerTurnUseCase";
+import { GameResultMySQLRepository } from "./../infrastructure/repository/gameResult/gameResultMySQLRepository";
+import { GameMySQLRepository } from "./../infrastructure/repository/game/gameMySQLRepository";
+import { TurnMySQLRepository } from "./../infrastructure/repository/turn/turnMySQLRepository";
 import { Point } from "./../domain/model/turn/point";
-import { TurnService } from "./../application/service/turnService";
+
 import express from "express";
 import { toDisc } from "../domain/model/turn/disc";
 
 export const turnRouter = express.Router();
 
-const turnService = new TurnService();
+const registerTurnUseCase = new RegisterTurnUseCase(
+	new GameMySQLRepository(),
+	new TurnMySQLRepository(),
+	new GameResultMySQLRepository()
+);
+
+const findLatestGameTurnCountUseCase = new FindLatestGameTurnCountUseCase(
+	new GameMySQLRepository(),
+	new TurnMySQLRepository(),
+	new GameResultMySQLRepository()
+);
 
 // DTO：データをクラスに格納してやり取りする
 
@@ -22,7 +37,7 @@ turnRouter.get(
 	async (req, res: express.Response<TurnGetResponseBody>) => {
 		const turnCount = parseInt(req.params.turnCount);
 
-		const output = await turnService.findLatestGameTurnCount(turnCount);
+		const output = await findLatestGameTurnCountUseCase.run(turnCount);
 
 		const responseBody = {
 			turnCount: output.turnCount,
@@ -56,7 +71,7 @@ turnRouter.post(
 		// Pointモデルのconstructorでバリデーションエラーを投げる
 		const point = new Point(req.body.move.x, req.body.move.y);
 
-		await turnService.registerTurn(turnCount, disc, point);
+		await registerTurnUseCase.run(turnCount, disc, point);
 
 		res.status(201).end();
 	}
