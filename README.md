@@ -2,7 +2,7 @@
 
 [リバーシで学ぶアプリケーション設計入門〜仕様の整理からTypeScriptでの実装まで〜](https://www.udemy.com/course/learning-application-architecture-with-reversi/)
 
-## Udemy動画の内容
+## 概要
 - TypeScript の基礎知識と async/await を用いた非同期処理
 - アプリケーションの仕様の整理や API・DB 設計の流れの例
 - MVC や 3 層アーキテクチャなどの、アプリケーション設計の基本概念
