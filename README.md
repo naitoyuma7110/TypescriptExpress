@@ -1,4 +1,4 @@
-# 「リバーシで学ぶアプリケーション設計入門」でアーキテクチャの勉強
+# Expressでリバーシを作成
 
 [リバーシで学ぶアプリケーション設計入門〜仕様の整理からTypeScriptでの実装まで〜](https://www.udemy.com/course/learning-application-architecture-with-reversi/)
 
