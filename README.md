@@ -11,6 +11,4 @@
 - 依存性逆転の原則を適用した、ドメイン層を中心としたアーキテクチャ
 - QueryService を使った Repository の弱点への対応
 
-とても分かりやすかったし勉強になりました(^^)/
-
 ![test](https://github.com/naitoyuma7110/TypescriptExpress/assets/128150297/6745a062-ac76-4610-8fcf-76cfa63feaf9)
